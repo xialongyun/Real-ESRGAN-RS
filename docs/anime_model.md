@@ -26,7 +26,7 @@ Pre-trained models: [RealESRGAN_x4plus_anime_6B](https://github.com/xinntao/Real
 # download model
 wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P weights
 # inference
-python inference_realesrgan.py -n RealESRGAN_x4plus_anime_6B -i inputs
+python inference_realesrgan.py -n RealESRGAN_x4plus_anime_6B -i input
 ```
 
 ### ncnn Executable File

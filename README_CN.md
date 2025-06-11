@@ -201,7 +201,7 @@ wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_
 推断!
 
 ```bash
-python inference_realesrgan.py -n RealESRGAN_x4plus -i inputs --face_enhance
+python inference_realesrgan.py -n RealESRGAN_x4plus -i input --face_enhance
 ```
 
 结果在`results`文件夹
@@ -219,7 +219,7 @@ python inference_realesrgan.py -n RealESRGAN_x4plus -i inputs --face_enhance
 # 下载模型
 wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P weights
 # 推断
-python inference_realesrgan.py -n RealESRGAN_x4plus_anime_6B -i inputs
+python inference_realesrgan.py -n RealESRGAN_x4plus_anime_6B -i input
 ```
 
 结果在`results`文件夹

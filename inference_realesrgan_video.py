@@ -329,7 +329,7 @@ def main():
 
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', type=str, default='inputs', help='Input video, image or folder')
+    parser.add_argument('-i', '--input', type=str, default='input', help='Input video, image or folder')
     parser.add_argument(
         '-n',
         '--model_name',
@@ -368,7 +368,7 @@ def main():
         '--ext',
         type=str,
         default='auto',
-        help='Image extension. Options: auto | jpg | png, auto means using the same extension as inputs')
+        help='Image extension. Options: auto | jpg | png, auto means using the same extension as input')
     args = parser.parse_args()
 
     args.input = args.input.rstrip('/').rstrip('\\')

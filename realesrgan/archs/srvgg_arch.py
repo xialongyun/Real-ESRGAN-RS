@@ -11,8 +11,8 @@ class SRVGGNetCompact(nn.Module):
     conducted on the HR feature space.
 
     Args:
-        num_in_ch (int): Channel number of inputs. Default: 3.
-        num_out_ch (int): Channel number of outputs. Default: 3.
+        num_in_ch (int): Channel number of input. Default: 3.
+        num_out_ch (int): Channel number of output. Default: 3.
         num_feat (int): Channel number of intermediate features. Default: 64.
         num_conv (int): Number of convolution layers in the body network. Default: 16.
         upscale (int): Upsampling factor. Default: 4.

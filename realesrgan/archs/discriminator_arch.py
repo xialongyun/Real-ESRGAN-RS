@@ -11,7 +11,7 @@ class UNetDiscriminatorSN(nn.Module):
     It is used in Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data.
 
     Arg:
-        num_in_ch (int): Channel number of inputs. Default: 3.
+        num_in_ch (int): Channel number of input. Default: 3.
         num_feat (int): Channel number of base intermediate features. Default: 64.
         skip_connection (bool): Whether to use skip connections between U-Net. Default: True.
     """

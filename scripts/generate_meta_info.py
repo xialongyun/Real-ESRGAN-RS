@@ -36,17 +36,17 @@ if __name__ == '__main__':
     parser.add_argument(
         '--input',
         nargs='+',
-        default=['datasets/DF2K/DF2K_HR', 'datasets/DF2K/DF2K_multiscale'],
+        default=['datasets/GF04/sub'],
         help='Input folder, can be a list')
     parser.add_argument(
         '--root',
         nargs='+',
-        default=['datasets/DF2K', 'datasets/DF2K'],
+        default=['datasets/GF04'],
         help='Folder root, should have the length as input folders')
     parser.add_argument(
         '--meta_info',
         type=str,
-        default='datasets/DF2K/meta_info/meta_info_DF2Kmultiscale.txt',
+        default='datasets/GF04/meta_info/meta_info_GF04.txt',
         help='txt path for meta info')
     parser.add_argument('--check', action='store_true', help='Read image to check whether it is ok')
     args = parser.parse_args()

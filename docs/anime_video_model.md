@@ -36,11 +36,11 @@ The following are some demos (best view in the full screen mode).
 # download model
 wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-animevideov3.pth -P weights
 # single gpu and single process inference
-CUDA_VISIBLE_DEVICES=0 python inference_realesrgan_video.py -i inputs/video/onepiece_demo.mp4 -n realesr-animevideov3 -s 2 --suffix outx2
+CUDA_VISIBLE_DEVICES=0 python inference_realesrgan_video.py -i input/video/onepiece_demo.mp4 -n realesr-animevideov3 -s 2 --suffix outx2
 # single gpu and multi process inference (you can use multi-processing to improve GPU utilization)
-CUDA_VISIBLE_DEVICES=0 python inference_realesrgan_video.py -i inputs/video/onepiece_demo.mp4 -n realesr-animevideov3 -s 2 --suffix outx2 --num_process_per_gpu 2
+CUDA_VISIBLE_DEVICES=0 python inference_realesrgan_video.py -i input/video/onepiece_demo.mp4 -n realesr-animevideov3 -s 2 --suffix outx2 --num_process_per_gpu 2
 # multi gpu and multi process inference
-CUDA_VISIBLE_DEVICES=0,1,2,3 python inference_realesrgan_video.py -i inputs/video/onepiece_demo.mp4 -n realesr-animevideov3 -s 2 --suffix outx2 --num_process_per_gpu 2
+CUDA_VISIBLE_DEVICES=0,1,2,3 python inference_realesrgan_video.py -i input/video/onepiece_demo.mp4 -n realesr-animevideov3 -s 2 --suffix outx2 --num_process_per_gpu 2
 ```
 
 ```console

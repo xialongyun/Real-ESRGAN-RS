@@ -4,13 +4,43 @@ import glob
 import os
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
-
+from tqdm import tqdm
 from realesrgan import RealESRGANer
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
 
+def split_into_batches(file_list, batch_step):
+    """
+    将文件列表均分为指定份数
+
+    :param file_list: 要分割的原始文件列表
+    :param batch_step: 需要划分的份数（必须大于0）
+    :return: 分割后的批次列表
+    """
+    if batch_step <= 0:
+        raise ValueError("batch_step必须大于0")
+
+    total = len(file_list)
+    if total == 0:
+        return []
+
+    # 计算基础批量大小和余数
+    base_size, remainder = divmod(total, batch_step)
+
+    batches = []
+    start = 0
+    for i in range(batch_step):
+        # 前remainder个批次每个多分配一个元素
+        end = start + base_size + (1 if i < remainder else 0)
+        batches.append(file_list[start:end])
+        start = end
+
+    return batches
+
+
 def main():
-    """Inference demo for Real-ESRGAN.
+    """
+    Inference demo for Real-ESRGAN.
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, default='inputs', help='Input image or folder')
@@ -83,6 +113,18 @@ def main():
             'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-wdn-x4v3.pth',
             'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.5.0/realesr-general-x4v3.pth'
         ]
+    elif args.model_name == 'net_g_latest':
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+        netscale = 4
+    elif args.model_name == 'net_g_latest2':
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+        netscale = 4
+    elif args.model_name == 'net_g_latest_gf04':
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+        netscale = 4
+    elif args.model_name == 'net_g_latest_drone':
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+        netscale = 4
 
     # determine model paths
     if args.model_path is not None:
@@ -125,20 +167,46 @@ def main():
             bg_upsampler=upsampler)
     os.makedirs(args.output, exist_ok=True)
 
+    # if os.path.isfile(args.input):
+    #     paths = [args.input]
+    # else:
+    #     paths = sorted(glob.glob(os.path.join(args.input, '*')))
+
     if os.path.isfile(args.input):
-        paths = [args.input]
+        file_list = [args.input]
     else:
-        paths = sorted(glob.glob(os.path.join(args.input, '*')))
+        file_list = []
+        # 递归获取所有文件
+        for root, _, files in os.walk(args.input):
+            files = [os.path.join(root, f) for f in files]
+            file_list.extend(sorted(files))
 
-    for idx, path in enumerate(paths):
+    # 分批存储信息
+    batches = split_into_batches(file_list, 4)
+
+    for idx, path in enumerate(tqdm(file_list)):
+        # 跳过目录（只处理文件）
+        if os.path.isdir(path):
+            continue
+
+        # 计算相对路径
+        rel_path = os.path.relpath(path, args.input)
+        # 准备输出路径
+        save_dir = os.path.join(args.output, os.path.dirname(rel_path))
+        os.makedirs(save_dir, exist_ok=True)
+
+        # 原文件名处理
         imgname, extension = os.path.splitext(os.path.basename(path))
-        print('Testing', idx, imgname)
+        print(f'Processing {idx + 1}/{len(file_list)}: {rel_path}')
 
+        # 图像读取和模式判断（保持原有逻辑）
         img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
-        if len(img.shape) == 3 and img.shape[2] == 4:
-            img_mode = 'RGBA'
-        else:
-            img_mode = None
+        if img is None:
+            print(f'Warning: Failed to read image {path}')
+            continue
+
+        # 判断图像模式
+        img_mode = 'RGBA' if len(img.shape) == 3 and img.shape[2] == 4 else None
 
         try:
             if args.face_enhance:
@@ -149,18 +217,32 @@ def main():
             print('Error', error)
             print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
         else:
+            # 处理文件扩展名
             if args.ext == 'auto':
-                extension = extension[1:]
+                extension = extension[1:]  # 去掉点号
             else:
                 extension = args.ext
-            if img_mode == 'RGBA':  # RGBA images should be saved in png format
-                extension = 'png'
-            if args.suffix == '':
-                save_path = os.path.join(args.output, f'{imgname}.{extension}')
-            else:
-                save_path = os.path.join(args.output, f'{imgname}_{args.suffix}.{extension}')
+
+            # 强制RGBA保存为PNG
+            extension = 'png' if img_mode == 'RGBA' else extension
+
+            # 构建最终保存路径
+            suffix = f'_{args.suffix}' if args.suffix else ''
+            save_name = f'{imgname}{suffix}.{extension}'
+            save_path = os.path.join(save_dir, save_name)
+
+            # 保存图像
             cv2.imwrite(save_path, output)
+            print(f'Saved to: {save_path}')
 
 
 if __name__ == '__main__':
     main()
+
+
+'''
+使用方法
+cd E:\codebag\SuperResolution\SuperResolution
+python inference_realesrgan.py -n RealESRGAN_x4plus -i ./images0822/inputs/ -o ./images0822/outputs/ 
+'''
+
